@@ -1,0 +1,21 @@
+{
+  "groups": [
+    {
+      "group": "Airdrop",
+      "contracts": [
+        {
+          "name": "airdrop",
+          "deployer": "deployer",
+          "args": [],
+          "verify": "contracts/airdrop.sol:airdrop"
+        },
+        {
+          "name": "USDT",
+          "deployer": "deployer",
+          "args": [],
+          "verify": "contracts/USDT.sol:USDT"
+        }
+      ]
+    }
+  ]
+}

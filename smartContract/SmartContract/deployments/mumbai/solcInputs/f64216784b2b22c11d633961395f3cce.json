@@ -1,0 +1,38 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)\n\npragma solidity ^0.8.0;\n\n/**\n * @dev Interface of the ERC20 standard as defined in the EIP.\n */\ninterface IERC20 {\n    /**\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\n     * another (`to`).\n     *\n     * Note that `value` may be zero.\n     */\n    event Transfer(address indexed from, address indexed to, uint256 value);\n\n    /**\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\n     * a call to {approve}. `value` is the new allowance.\n     */\n    event Approval(address indexed owner, address indexed spender, uint256 value);\n\n    /**\n     * @dev Returns the amount of tokens in existence.\n     */\n    function totalSupply() external view returns (uint256);\n\n    /**\n     * @dev Returns the amount of tokens owned by `account`.\n     */\n    function balanceOf(address account) external view returns (uint256);\n\n    /**\n     * @dev Moves `amount` tokens from the caller's account to `to`.\n     *\n     * Returns a boolean value indicating whether the operation succeeded.\n     *\n     * Emits a {Transfer} event.\n     */\n    function transfer(address to, uint256 amount) external returns (bool);\n\n    /**\n     * @dev Returns the remaining number of tokens that `spender` will be\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\n     * zero by default.\n     *\n     * This value changes when {approve} or {transferFrom} are called.\n     */\n    function allowance(address owner, address spender) external view returns (uint256);\n\n    /**\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\n     *\n     * Returns a boolean value indicating whether the operation succeeded.\n     *\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\n     * that someone may use both the old and the new allowance by unfortunate\n     * transaction ordering. One possible solution to mitigate this race\n     * condition is to first reduce the spender's allowance to 0 and set the\n     * desired value afterwards:\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\n     *\n     * Emits an {Approval} event.\n     */\n    function approve(address spender, uint256 amount) external returns (bool);\n\n    /**\n     * @dev Moves `amount` tokens from `from` to `to` using the\n     * allowance mechanism. `amount` is then deducted from the caller's\n     * allowance.\n     *\n     * Returns a boolean value indicating whether the operation succeeded.\n     *\n     * Emits a {Transfer} event.\n     */\n    function transferFrom(\n        address from,\n        address to,\n        uint256 amount\n    ) external returns (bool);\n}\n"
+    },
+    "contracts/airdrop.sol": {
+      "content": "// SPDX-License-Identifier: UNLICENSED\r\npragma solidity 0.8.8;\r\n\r\nimport \"@openzeppelin/contracts/token/ERC20/IERC20.sol\";\r\n\r\n// Uncomment this line to use console.log\r\n// import \"hardhat/console.sol\";\r\n\r\ncontract airdrop {\r\n    address public owner;\r\n    constructor() {\r\n        owner = msg.sender;\r\n    }\r\n\r\n    /// @notice 向多个地址转账ERC20代币，使用前需要先授权\r\n    ///\r\n    /// @param _token 转账的ERC20代币地址\r\n    /// @param _addresses 空投地址数组\r\n    /// @param _amounts 代币数量数组（每个地址的空投数量）\r\n    function multiTransferToken(\r\n        address _token,\r\n        address[] calldata _addresses,\r\n        uint256[] calldata _amounts\r\n        ) external {\r\n        \r\n        require(msg.sender == owner,\"onlyOwner\");\r\n\r\n        // 检查：_addresses和_amounts数组的长度相等\r\n        require(_addresses.length == _amounts.length, \"Lengths of Addresses and Amounts NOT EQUAL\");\r\n        IERC20 token = IERC20(_token); // 声明IERC合约变量\r\n        // uint _amountSum = getSum(_amounts); // 计算空投代币总量\r\n        // 检查：授权代币数量 >= 空投代币总量\r\n        // require(token.allowance(msg.sender, address(this)) >= _amountSum, \"Need Approve ERC20 token\");\r\n        \r\n        // for循环，利用transferFrom函数发送空投\r\n        for (uint8 i; i < _addresses.length; i++) {\r\n            token.transferFrom(msg.sender, _addresses[i], _amounts[i]);\r\n        }\r\n    }\r\n\r\n    // // 数组求和函数\r\n    // function getSum(uint256[] calldata _arr) public pure returns(uint sum)\r\n    // {\r\n    //     for(uint i = 0; i < _arr.length; i++)\r\n    //         sum = sum + _arr[i];\r\n    // }\r\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
